@@ -141,6 +141,8 @@
   .project-buttons {
     display: flex;
     justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
     margin-top: 20px;
     gap: 15px;
   }
@@ -184,31 +186,90 @@
     }
 
     /* Mobile Controls */
-    .mobile-controls {
+    .gba-controls {
       position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
+      bottom: 2rem;
+      width: 90%;
       display: flex;
-      gap: 1rem;
+      justify-content: space-between;
+      padding: 0 2rem;
+      pointer-events: none;
       z-index: 9;
       display: none;
     }
     
-    .mobile-button {
-      padding: 1rem 1.2rem;
-      font-size: 2rem;
-      background-color: #eee;
-      border: 2px solid #888;
-      border-radius: 12px;
-      box-shadow: 0 3px 0 #ccc;
-      user-select: none;
+    .dpad {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      pointer-events: auto;
+    }
+    
+    .dpad-btn {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 8px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
       touch-action: manipulation;
     }
     
-    .mobile-button.jump {
-      background-color: #d0f0ff;
+    .dpad-btn.left {
+      left: 0;
+      top: 30px;
     }
+    
+    .dpad-btn.right {
+      right: 0;
+      top: 30px;
+    }
+    
+    .ab-buttons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+    }
+    
+    .ab-btn {
+      width: 60px;
+      height: 60px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border-radius: 50%;
+      background-color: rgba(255, 100, 100, 0.3);
+      border: 2px solid rgba(255, 100, 100, 0.5);
+      backdrop-filter: blur(4px);
+      color: white;
+      touch-action: manipulation;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+    
+    .a-btn {
+      background-color: rgba(100, 200, 255, 0.3);
+      border-color: rgba(100, 200, 255, 0.5);
+    }
+    
+@media (max-width: 768px) {
+  .gba-controls {
+    display: block;
+  }
+
+  .nav-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .disclaimer {
+    font-size: 10px;
+    bottom: 15px;
+  }
+}
     
   
   
