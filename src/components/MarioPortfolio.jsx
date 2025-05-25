@@ -130,8 +130,8 @@ export default function MarioPortfolio() {
       }
 
       // Collision with ground
-      if (newPos.y >= 500) {
-        newPos.y = 500;
+      if (newPos.y >= 700) {
+        newPos.y = 700;
         newVel.y = 0;
         setOnGround(true);
       }

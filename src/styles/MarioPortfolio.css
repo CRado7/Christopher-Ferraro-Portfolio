@@ -4,8 +4,8 @@
     position: relative;
     width: 100dvw;
     height: 100dvh;
-    background: linear-gradient(to top, #88c070 50%, #9be0f3 50%);
-    /* background: url('../assets/mario-background.jpg'); */
+    /* background: linear-gradient(to top, #88c070 50%, #9be0f3 50%); */
+    background: url('../assets/mario-background.webp');
     background-size: cover;
     overflow: hidden;
   }
@@ -26,9 +26,9 @@
   }
 
   .project-row {
-    top: 45%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 65%;
+    left: 20%;
+    /* transform: translate(-50%, -50%); */
   }
 
   .information-row {
