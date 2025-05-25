@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.game-container {
+    position: relative;
+    width: 100dvw;
+    height: 100dvh;
+    background: linear-gradient(to top, #88c070 50%, #9be0f3 50%);
+    /* background: url('../assets/mario-background.jpg'); */
+    background-size: cover;
+    overflow: hidden;
+  }
+  
+  .mario {
+    position: absolute;
+    width: 64px;
+    height: 80px;
+    background-image: url('../assets/mario.png');
+    background-position: 0 0;
+    background-size: cover;
+    image-rendering: pixelated;
+  }
+
+  .project-row, .information-row {
+    position: absolute;
+    display: flex;
+  }
+
+  .project-row {
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .information-row {
+    top: 20%;
+    left: 45%;
+  }
+
+
+.project-block,
+.brick-block,
+.information-block {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 50px;
+    height: 50px;
+}
+    
+  
+  .brick-block {
+    background-image: url('../assets/brick-block.png');
+    transition: transform 0.1s;
+  }
+
+  .brick-block.bump {
+    animation: bump 0.3s ease-out;
+  }
+  
+  .project-block, .information-block {
+    background-image: url('../assets/project-block.png');
+    cursor: pointer;
+  }
+
+  .project-block.bump, .information-block.bump {
+    animation: bump 0.3s ease-out;
+  }
+  
+
+  @keyframes bump {
+    0% { transform: translateY(0); }
+    30% { transform: translateY(-8px); }
+    100% { transform: translateY(0); }
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  
+  .modal-content {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 900px;
+    width: 90%;
+    text-align: left;
+  }
+
+  .modal-content h1 {
+    text-align: center;
+    font-family: 'Press Start 2P', cursive; /* retro pixel font */
+  }
+
+  .tech-stack {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .tech-stack img {
+    width: 30px;
+    height: 30px;
+    margin: 0 5px;
+  }
+
+  .tech-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+  }
+
+  @keyframes expandModal {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    100% {
+      top: 50%;
+      left: 50%;
+      width: 80vw;
+      height: 80vh;
+      transform: translate(-50%, -50%);
+      opacity: 1;
+    }
+  }
+  
+  .project-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 15px;
+  }
+
+    .project-buttons button {
+        background-color: #f83030; /* Mario red */
+        color: #fff;
+        border: 4px solid #8b0000; /* darker red border */
+        padding: 12px 24px;
+        font-size: 10px;
+        font-family: 'Press Start 2P', cursive; /* retro pixel font */
+        text-transform: uppercase;
+        cursor: pointer;
+        box-shadow: 0 4px 0 #5c0000;
+        transition: transform 0.1s, box-shadow 0.1s;
+        width: 200px;
+    }
+
+    .project-buttons button:active {
+        transform: translateY(4px);
+        box-shadow: none;
+      }
+
+    .project-buttons button:focus {
+        outline: 2px solid yellow;
+        outline-offset: 2px;
+    }
+
+    .disclaimer {
+        position: absolute;
+        bottom: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 14px;
+        color: #f83030;
+        font-family: 'Press Start 2P', cursive; /* retro pixel font */
+        width: 90%;
+        text-align: center;
+        padding: 5px 0;
+        background-color: #ffffff;
+    }
+  
+  
+  
