@@ -237,6 +237,15 @@ export default function MarioPortfolio() {
         />
       </div>
 
+      <div className="about-row">
+        <div className="about-block"></div>
+        <div className="brick-block-row">
+          <div className="brick-block"></div>
+          <div className="brick-block"></div>
+          <div className="brick-block"></div>
+        </div>
+      </div>
+
       {selectedProject && modalOrigin && (
         <div
           className="modal-overlay"
@@ -306,35 +315,49 @@ export default function MarioPortfolio() {
       )}
       <p className="disclaimer">Please allow some time for projects hosted on Render to load.</p>
       
-      <div className="mobile-controls">
-        <button
-          onTouchStart={() => (keys.current['ArrowLeft'] = true)}
-          onTouchEnd={() => (keys.current['ArrowLeft'] = false)}
-          className="mobile-button"
-        >
-          ◀
-        </button>
-        <button
-          onTouchStart={() => (keys.current['ArrowRight'] = true)}
-          onTouchEnd={() => (keys.current['ArrowRight'] = false)}
-          className="mobile-button"
-        >
-          ▶
-        </button>
-        <button
-          onTouchStart={() => {
-            if (onGround) {
-              keys.current['Space'] = true;
+      <div className="gba-controls">
+        <div className="dpad">
+          <button
+            onTouchStart={() => (keys.current['ArrowLeft'] = true)}
+            onTouchEnd={() => (keys.current['ArrowLeft'] = false)}
+            className="dpad-btn left"
+          />
+          <button
+            onTouchStart={() => (keys.current['ArrowRight'] = true)}
+            onTouchEnd={() => (keys.current['ArrowRight'] = false)}
+            className="dpad-btn right"
+          />
+        </div>
+
+        <div className="ab-buttons">
+          <button
+            onTouchStart={() => {
+              if (onGround) {
+                keys.current['Space'] = true;
+                setTimeout(() => {
+                  keys.current['Space'] = false;
+                }, 100);
+              }
+            }}
+            className="ab-btn a-btn"
+          >
+            A
+          </button>
+          <button
+            onTouchStart={() => {
+              // You can assign any action to B later
+              keys.current['KeyB'] = true;
               setTimeout(() => {
-                keys.current['Space'] = false;
+                keys.current['KeyB'] = false;
               }, 100);
-            }
-          }}
-          className="mobile-button jump"
-        >
-          ⬆
-        </button>
+            }}
+            className="ab-btn b-btn"
+          >
+            B
+          </button>
+        </div>
       </div>
+
     </div>
   );
 }
