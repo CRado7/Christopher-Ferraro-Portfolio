@@ -31,7 +31,7 @@ const projectsData = [
     listTitle: 'Key Features Include:',
     listItems: [
       'User authentication.',
-      'User-generated content, including recipes and comments.',
+      'User-generated content, including recipes.',
       'Favorites feature for saving recipes.',
       'Reset password functionality with secure, tokenized links.',
     ],
