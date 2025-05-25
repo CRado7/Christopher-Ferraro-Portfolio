@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../styles/MarioPortfolio.css';
+import MarioSprite from '../components/MarioSprite';
 import projectsData from '../data/projectsData';
 
 const GRAVITY = 0.6;
 const JUMP_STRENGTH = -18;
 const MOVE_SPEED = 5;
+const JUMP_FRAME = 4;
+const STAND_FRAME = 0;
 
 export default function MarioPortfolio() {
   const [position, setPosition] = useState({ x: 100, y: 0 });
@@ -204,20 +207,26 @@ export default function MarioPortfolio() {
 
       setVelocity(newVel);
       setPosition(newPos);
-    }, 1000 / 60);
+    }, 1000 / 80);
 
     return () => clearInterval(interval);
   }, [velocity, position, onGround]);
 
   return (
     <div className="game-container" ref={gameRef}>
-      <div
-        className="mario"
-        style={{
-          transform: `translate(${position.x}px, ${position.y}px)`,
-          backgroundPosition: `${-frame * 64}px 0px`,
-        }}
-      />
+    <MarioSprite 
+      x={position.x} 
+      y={position.y} 
+      frame={
+        !onGround 
+          ? JUMP_FRAME 
+          : velocity.x === 0 
+            ? STAND_FRAME 
+            : frame
+      }
+      facing={velocity.x < 0 ? 'left' : 'right'} 
+    />
+
       <div className="project-row">
         {projectsData.map((project, index) => {
             const brickIndex = index * 2;

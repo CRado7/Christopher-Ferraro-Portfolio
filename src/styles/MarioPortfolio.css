@@ -14,11 +14,13 @@
     position: absolute;
     width: 64px;
     height: 80px;
-    background-image: url('../assets/mario.png');
-    background-position: 0 0;
-    background-size: cover;
-    image-rendering: pixelated;
-  }
+    background-repeat: no-repeat;
+    background-size: cover;      /* Use this if your sheet isn't scaled */
+    position: absolute;
+    image-rendering: pixelated; /* Keeps that crisp 8-bit look */
+    z-index: 1;
+
+  }  
 
   .project-row, .information-row {
     position: absolute;
