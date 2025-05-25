@@ -22,11 +22,12 @@ export default function MarioPortfolio() {
   const [modalOrigin, setModalOrigin] = useState(null);
   const viewButtonRef = useRef(null);
   const closeButtonRef = useRef(null);
-  const [focusedIndex, setFocusedIndex] = useState(0); // 0: view, 1: close
+  const [focusedIndex, setFocusedIndex] = useState(0);
+
+  const lastDirectionRef = useRef('right');
 
   useEffect(() => {
     if (selectedProject) {
-      // Auto-focus the first button when modal opens
       setFocusedIndex(0);
       viewButtonRef.current?.focus();
     }
@@ -41,11 +42,10 @@ export default function MarioPortfolio() {
       }
     }
   }, [focusedIndex, selectedProject]);
-  
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (selectedProject) {
-        // Inside modal: arrow navigation + enter to select
         if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
           e.preventDefault();
           setFocusedIndex((prev) => (prev === 0 ? 1 : 0));
@@ -55,94 +55,85 @@ export default function MarioPortfolio() {
           if (focusedIndex === 0) viewButtonRef.current?.click();
           else closeButtonRef.current?.click();
         }
-        return; // Exit early so modal blocks other controls
+        return;
       }
-  
-      // Outside modal: enable movement
+
       if (['ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
         keys.current[e.code] = true;
       }
     };
-  
+
     const handleKeyUp = (e) => {
-      // Always allow keyup to stop movement, even if modal is open
       if (['ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
         keys.current[e.code] = false;
       }
     };
-  
+
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
-  
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
   }, [selectedProject, focusedIndex]);
-  
-  
-   
+
   const openModalFromBlock = (index) => {
     const block = blockRefs.current[index];
     if (!block) return;
-  
+
     const rect = block.getBoundingClientRect();
-  
+
     setModalOrigin({
       top: rect.top + window.scrollY,
       left: rect.left + window.scrollX,
       width: rect.width,
       height: rect.height,
     });
-  
+
     const projectIndex = Math.floor(index / 2);
     setSelectedProject(projectsData[projectIndex]);
-  };  
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
       let newVel = { ...velocity };
       let newPos = { ...position };
 
-      // Move left/right
       if (keys.current['ArrowLeft']) newVel.x = -MOVE_SPEED;
       else if (keys.current['ArrowRight']) newVel.x = MOVE_SPEED;
       else newVel.x = 0;
 
-      // Jump
       if (keys.current['Space'] && onGround) {
         newVel.y = JUMP_STRENGTH;
         setOnGround(false);
       }
 
-      // Apply gravity
       newVel.y += GRAVITY;
-
       newPos.x += newVel.x;
       newPos.y += newVel.y;
 
-
-    // Add horizontal bounds
-    const gameWidth = gameRef.current?.offsetWidth || 0;
-    const marioWidth = 64;
-    if (newPos.x < -marioWidth / 2) {
+      const gameWidth = gameRef.current?.offsetWidth || 0;
+      const marioWidth = 64;
+      if (newPos.x < -marioWidth / 2) {
         newPos.x = gameWidth - marioWidth / 2;
       }
       if (newPos.x > gameWidth - marioWidth / 2) {
         newPos.x = -marioWidth / 2;
       }
 
-      // Collision with ground
       if (newPos.y >= 700) {
         newPos.y = 700;
         newVel.y = 0;
         setOnGround(true);
       }
 
-      // Animate Mario sprite
       if (newVel.x !== 0) {
         setFrame((prev) => (prev + 1) % 4);
       }
+
+      if (newVel.x < 0) lastDirectionRef.current = 'left';
+      else if (newVel.x > 0) lastDirectionRef.current = 'right';
 
       const marioBox = {
         x: newPos.x,
@@ -167,16 +158,16 @@ export default function MarioPortfolio() {
         };
 
         const isLandingOnTop =
-            marioBox.y + marioBox.height <= blockBox.y + 5 && // Mario's feet are just above the block
-            marioBox.y + marioBox.height + newVel.y >= blockBox.y && // Would intersect from above next frame
-            marioBox.x + marioBox.width > blockBox.x && // Horizontal overlap
-            marioBox.x < blockBox.x + blockBox.width &&
-            newVel.y > 0; // Mario is falling
+          marioBox.y + marioBox.height <= blockBox.y + 5 &&
+          marioBox.y + marioBox.height + newVel.y >= blockBox.y &&
+          marioBox.x + marioBox.width > blockBox.x &&
+          marioBox.x < blockBox.x + blockBox.width &&
+          newVel.y > 0;
 
-            if (isLandingOnTop) {
-            newPos.y = blockBox.y - marioBox.height; // Land on top
-            newVel.y = 0;
-            landed = true;
+        if (isLandingOnTop) {
+          newPos.y = blockBox.y - marioBox.height;
+          newVel.y = 0;
+          landed = true;
         }
 
         const isColliding =
@@ -185,26 +176,26 @@ export default function MarioPortfolio() {
           marioBox.y < blockBox.y + blockBox.height &&
           marioBox.y + marioBox.height > blockBox.y;
 
-          const isHittingFromBelow =
+        const isHittingFromBelow =
           marioBox.y + marioBox.height <= blockBox.y + 150 &&
           marioBox.y + marioBox.height >= blockBox.y - 20 &&
           newVel.y < 0;
-        
-          if (isColliding && isHittingFromBelow) {
-            newPos.y = blockBox.y + blockBox.height; // Position Mario just below the block
-            newVel.y = 0; // Cancel upward velocity
-          
-            console.log(`Mario bumped block #${index}`);
-            setBumpedBrickIndex(index);
-            setTimeout(() => setBumpedBrickIndex(null), 300);
-          
-            if (index % 2 === 1) {
-                openModalFromBlock(index); // <-- Key change
-              }
-          }  
-      });
-      setOnGround(newPos.y >= 500 || landed);4
 
+        if (isColliding && isHittingFromBelow) {
+          newPos.y = blockBox.y + blockBox.height;
+          newVel.y = 0;
+
+          console.log(`Mario bumped block #${index}`);
+          setBumpedBrickIndex(index);
+          setTimeout(() => setBumpedBrickIndex(null), 300);
+
+          if (index % 2 === 1) {
+            openModalFromBlock(index);
+          }
+        }
+      });
+
+      setOnGround(newPos.y >= 500 || landed);
       setVelocity(newVel);
       setPosition(newPos);
     }, 1000 / 80);
@@ -214,45 +205,40 @@ export default function MarioPortfolio() {
 
   return (
     <div className="game-container" ref={gameRef}>
-    <MarioSprite 
-      x={position.x} 
-      y={position.y} 
-      frame={
-        !onGround 
-          ? JUMP_FRAME 
-          : velocity.x === 0 
-            ? STAND_FRAME 
-            : frame
-      }
-      facing={velocity.x < 0 ? 'left' : 'right'} 
-    />
+      <MarioSprite
+        x={position.x}
+        y={position.y}
+        frame={!onGround ? JUMP_FRAME : velocity.x === 0 ? STAND_FRAME : frame}
+        facing={lastDirectionRef.current}
+      />
 
       <div className="project-row">
         {projectsData.map((project, index) => {
-            const brickIndex = index * 2;
-            const projectIndex = index * 2 + 1;
+          const brickIndex = index * 2;
+          const projectIndex = index * 2 + 1;
 
-            return (
-                <React.Fragment key={project.id}>
-                    <div
-                        className={`brick-block ${bumpedBrickIndex === brickIndex ? 'bump' : ''}`}
-                        ref={(el) => (blockRefs.current[brickIndex] = el)}
-                    />
-                    <div
-                        className={`project-block ${bumpedBrickIndex === projectIndex ? 'bump' : ''}`}
-                        ref={(el) => (blockRefs.current[projectIndex] = el)}
-                        onClick={() => openModalFromBlock(projectIndex)}
-                    />
-                </React.Fragment>
-            );
-            })}
-            <div
-            className={`brick-block ${bumpedBrickIndex === projectsData.length * 2 ? 'bump' : ''}`}
-            ref={(el) => (blockRefs.current[projectsData.length * 2] = el)}
-            />
+          return (
+            <React.Fragment key={project.id}>
+              <div
+                className={`brick-block ${bumpedBrickIndex === brickIndex ? 'bump' : ''}`}
+                ref={(el) => (blockRefs.current[brickIndex] = el)}
+              />
+              <div
+                className={`project-block ${bumpedBrickIndex === projectIndex ? 'bump' : ''}`}
+                ref={(el) => (blockRefs.current[projectIndex] = el)}
+                onClick={() => openModalFromBlock(projectIndex)}
+              />
+            </React.Fragment>
+          );
+        })}
+        <div
+          className={`brick-block ${bumpedBrickIndex === projectsData.length * 2 ? 'bump' : ''}`}
+          ref={(el) => (blockRefs.current[projectsData.length * 2] = el)}
+        />
       </div>
+
       {selectedProject && modalOrigin && (
-          <div 
+        <div
           className="modal-overlay"
           onClick={() => setSelectedProject(null)}
           style={{
@@ -263,73 +249,62 @@ export default function MarioPortfolio() {
             justifyContent: 'center',
             alignItems: 'center',
             overflow: 'hidden',
-            }}
-            >
-            <div 
+          }}
+        >
+          <div
             className="modal-content"
             onClick={(e) => e.stopPropagation()}
             style={{
-                position: 'absolute',
-                top: modalOrigin.top,
-                left: modalOrigin.left,
-                width: modalOrigin.width,
-                height: modalOrigin.height,
-                backgroundColor: 'white',
-                borderRadius: '8px',
-                overflow: 'auto',
-                transition: 'all 0.3s ease',
-                animation: 'expandModal .6s forwards',
-                zIndex: 1001,
+              position: 'absolute',
+              top: modalOrigin.top,
+              left: modalOrigin.left,
+              width: modalOrigin.width,
+              height: modalOrigin.height,
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              overflow: 'auto',
+              transition: 'all 0.3s ease',
+              animation: 'expandModal .6s forwards',
+              zIndex: 1001,
             }}
-            >
+          >
             <h1>{selectedProject.client}</h1>
             <p>{selectedProject.description}</p>
             <h3>{selectedProject.listTitle}</h3>
             <ul>
-                {selectedProject.listItems?.map((item, index) => (
+              {selectedProject.listItems?.map((item, index) => (
                 <li key={index}>{item}</li>
-                ))}
+              ))}
             </ul>
             <h3>{selectedProject.listTitle2}</h3>
             <ul>
-                {selectedProject.listItems2?.map((item, index) => (
+              {selectedProject.listItems2?.map((item, index) => (
                 <li key={index}>{item}</li>
-                ))}
+              ))}
             </ul>
 
             <div className="tech-stack">
-                {selectedProject.technologies?.map((tech, index) => (
+              {selectedProject.technologies?.map((tech, index) => (
                 <div key={index} className="tech-item">
-                    <img
-                    src={`/technologies/${tech}-logo.svg`}
-                    alt={tech}
-                    />
-                    <span>{tech}</span>
+                  <img src={`/technologies/${tech}-logo.svg`} alt={tech} />
+                  <span>{tech}</span>
                 </div>
-                ))}
+              ))}
             </div>
             <div className="project-buttons">
-                <a href ={selectedProject.link} target="_blank" rel="noopener noreferrer">
-                <button
-                    className="project-button"
-                    tabIndex={0}
-                    ref={viewButtonRef}
-                    >
-                    View Project
+              <a href={selectedProject.link} target="_blank" rel="noopener noreferrer">
+                <button className="project-button" tabIndex={0} ref={viewButtonRef}>
+                  View Project
                 </button>
-                </a>
-                <button
-                    onClick={() => setSelectedProject(null)}
-                    tabIndex={0}
-                    ref={closeButtonRef}
-                    >
-                    Close
-                </button>
+              </a>
+              <button onClick={() => setSelectedProject(null)} tabIndex={0} ref={closeButtonRef}>
+                Close
+              </button>
             </div>
-            </div>
+          </div>
         </div>
-        )}
-        <p className="disclaimer">Please allow some time for projects hosted on render to load.</p>
+      )}
+      <p className="disclaimer">Please allow some time for projects hosted on Render to load.</p>
     </div>
   );
 }
