@@ -182,6 +182,34 @@
         padding: 5px 0;
         background-color: #ffffff;
     }
+
+    /* Mobile Controls */
+    .mobile-controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 1rem;
+      z-index: 9;
+      display: none;
+    }
+    
+    .mobile-button {
+      padding: 1rem 1.2rem;
+      font-size: 2rem;
+      background-color: #eee;
+      border: 2px solid #888;
+      border-radius: 12px;
+      box-shadow: 0 3px 0 #ccc;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    
+    .mobile-button.jump {
+      background-color: #d0f0ff;
+    }
+    
   
   
   

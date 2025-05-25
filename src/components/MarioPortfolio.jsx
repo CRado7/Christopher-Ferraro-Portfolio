@@ -305,6 +305,36 @@ export default function MarioPortfolio() {
         </div>
       )}
       <p className="disclaimer">Please allow some time for projects hosted on Render to load.</p>
+      
+      <div className="mobile-controls">
+        <button
+          onTouchStart={() => (keys.current['ArrowLeft'] = true)}
+          onTouchEnd={() => (keys.current['ArrowLeft'] = false)}
+          className="mobile-button"
+        >
+          ◀
+        </button>
+        <button
+          onTouchStart={() => (keys.current['ArrowRight'] = true)}
+          onTouchEnd={() => (keys.current['ArrowRight'] = false)}
+          className="mobile-button"
+        >
+          ▶
+        </button>
+        <button
+          onTouchStart={() => {
+            if (onGround) {
+              keys.current['Space'] = true;
+              setTimeout(() => {
+                keys.current['Space'] = false;
+              }, 100);
+            }
+          }}
+          className="mobile-button jump"
+        >
+          ⬆
+        </button>
+      </div>
     </div>
   );
 }
