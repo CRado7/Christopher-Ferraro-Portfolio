@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+nav {
+    position: absolute;
+    top: 0;
+    width: 100dvw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px 0;
+}
+
+nav h1 {
+    font-size: 1rem;
+    color: #fff;
+    font-family: 'Press Start 2P', cursive; /* retro pixel font */
+    margin: 0;
+}
+
+.nav-right, .nav-left {
+    padding: 0 20px;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}

@@ -143,7 +143,7 @@
     gap: 15px;
   }
 
-    .project-buttons button {
+    .project-buttons button, nav button {
         background-color: #f83030; /* Mario red */
         color: #fff;
         border: 4px solid #8b0000; /* darker red border */
