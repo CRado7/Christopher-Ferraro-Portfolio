@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../styles/MarioPortfolio.css';
 import MarioSprite from '../components/MarioSprite';
+import AboutBlock from '../components/AboutBlock';
 import projectsData from '../data/projectsData';
 
 const GRAVITY = 0.6;
@@ -23,9 +24,15 @@ export default function MarioPortfolio() {
   const viewButtonRef = useRef(null);
   const closeButtonRef = useRef(null);
   const [focusedIndex, setFocusedIndex] = useState(0);
+  const [showAboutModal, setShowAboutModal] = useState(false);
 
   const lastDirectionRef = useRef('right');
 
+  const handleContactClick = () => {
+    window.location.href = 'mailto:christopher.ferraro34@gmail.com';
+    setShowAboutModal(false);
+  };
+  
   useEffect(() => {
     if (selectedProject) {
       setFocusedIndex(0);
@@ -34,18 +41,25 @@ export default function MarioPortfolio() {
   }, [selectedProject]);
 
   useEffect(() => {
-    if (selectedProject) {
+    if (selectedProject || showAboutModal) {
+      setFocusedIndex(0);
+      viewButtonRef.current?.focus();
+    }
+  }, [selectedProject, showAboutModal]);
+  
+  useEffect(() => {
+    if (selectedProject || showAboutModal) {
       if (focusedIndex === 0) {
         viewButtonRef.current?.focus();
       } else if (focusedIndex === 1) {
         closeButtonRef.current?.focus();
       }
     }
-  }, [focusedIndex, selectedProject]);
+  }, [focusedIndex, selectedProject, showAboutModal]);  
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (selectedProject) {
+      if (selectedProject || showAboutModal) {
         if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
           e.preventDefault();
           setFocusedIndex((prev) => (prev === 0 ? 1 : 0));
@@ -56,7 +70,7 @@ export default function MarioPortfolio() {
           else closeButtonRef.current?.click();
         }
         return;
-      }
+      }      
 
       if (['ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
         keys.current[e.code] = true;
@@ -181,18 +195,22 @@ export default function MarioPortfolio() {
           marioBox.y + marioBox.height >= blockBox.y - 20 &&
           newVel.y < 0;
 
-        if (isColliding && isHittingFromBelow) {
-          newPos.y = blockBox.y + blockBox.height;
-          newVel.y = 0;
-
-          console.log(`Mario bumped block #${index}`);
-          setBumpedBrickIndex(index);
-          setTimeout(() => setBumpedBrickIndex(null), 300);
-
-          if (index % 2 === 1) {
-            openModalFromBlock(index);
+          if (isColliding && isHittingFromBelow) {
+            newPos.y = blockBox.y + blockBox.height;
+            newVel.y = 0;
+          
+            console.log(`Mario bumped block #${index}`);
+            setBumpedBrickIndex(index);
+            setTimeout(() => setBumpedBrickIndex(null), 300);
+          
+            const aboutBlockIndex = projectsData.length * 2 + 1;
+          
+            if (index === aboutBlockIndex) {
+              setShowAboutModal(true);
+            } else if (index % 2 === 1) {
+              openModalFromBlock(index);
+            }
           }
-        }
       });
 
       setOnGround(newPos.y >= 500 || landed);
@@ -238,11 +256,25 @@ export default function MarioPortfolio() {
       </div>
 
       <div className="about-row">
-        <div className="about-block"></div>
+        <AboutBlock
+          index={projectsData.length * 2 + 1}
+          bumpedBrickIndex={bumpedBrickIndex}
+          setBumpedBrickIndex={setBumpedBrickIndex}
+          showModal={() => setShowAboutModal(true)}
+          blockRefs={blockRefs}
+        />
         <div className="brick-block-row">
-          <div className="brick-block"></div>
-          <div className="brick-block"></div>
-          <div className="brick-block"></div>
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className={`brick-block ${
+                bumpedBrickIndex === projectsData.length * 2 + 2 + i ? 'bump' : ''
+              }`}
+              ref={(el) =>
+                (blockRefs.current[projectsData.length * 2 + 2 + i] = el)
+              }
+            />
+          ))}
         </div>
       </div>
 
@@ -250,32 +282,10 @@ export default function MarioPortfolio() {
         <div
           className="modal-overlay"
           onClick={() => setSelectedProject(null)}
-          style={{
-            position: 'fixed',
-            top: 0, left: 0, right: 0, bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            overflow: 'hidden',
-          }}
         >
           <div
             className="modal-content"
             onClick={(e) => e.stopPropagation()}
-            style={{
-              position: 'absolute',
-              top: modalOrigin.top,
-              left: modalOrigin.left,
-              width: modalOrigin.width,
-              height: modalOrigin.height,
-              backgroundColor: 'white',
-              borderRadius: '8px',
-              overflow: 'auto',
-              transition: 'all 0.3s ease',
-              animation: 'expandModal .6s forwards',
-              zIndex: 1001,
-            }}
           >
             <h1>{selectedProject.client}</h1>
             <p>{selectedProject.description}</p>
@@ -313,6 +323,30 @@ export default function MarioPortfolio() {
           </div>
         </div>
       )}
+
+      {showAboutModal && (
+        <div className="modal-overlay" onClick={() => setShowAboutModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h1>About Me</h1>
+            <p>I’m a web developer, designer, and game-style portfolio builder who’s way too into Mario blocks.</p>
+            <div className="project-buttons">
+              <button
+                tabIndex={0}
+                ref={viewButtonRef}
+                onClick={handleContactClick}>
+                Contact Me
+              </button>
+              <button
+                onClick={() => setShowAboutModal(false)}
+                tabIndex={0}
+                ref={closeButtonRef}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <p className="disclaimer">Please allow some time for projects hosted on Render to load.</p>
       
       <div className="gba-controls">
