@@ -27,6 +27,8 @@ export default function MarioPortfolio() {
   const [showAboutModal, setShowAboutModal] = useState(false);
 
   const lastDirectionRef = useRef('right');
+  const aboutContactButtonRef = useRef(null);
+  const aboutCloseButtonRef = useRef(null);
 
   const handleContactClick = () => {
     window.location.href = 'mailto:christopher.ferraro34@gmail.com';
@@ -48,49 +50,57 @@ export default function MarioPortfolio() {
   }, [selectedProject, showAboutModal]);
   
   useEffect(() => {
-    if (selectedProject || showAboutModal) {
-      if (focusedIndex === 0) {
-        viewButtonRef.current?.focus();
-      } else if (focusedIndex === 1) {
-        closeButtonRef.current?.focus();
-      }
+    if (focusedIndex === 0) {
+      selectedProject
+        ? viewButtonRef.current?.focus()
+        : aboutContactButtonRef.current?.focus();
+    } else if (focusedIndex === 1) {
+      selectedProject
+        ? closeButtonRef.current?.focus()
+        : aboutCloseButtonRef.current?.focus();
     }
-  }, [focusedIndex, selectedProject, showAboutModal]);  
+  }, [focusedIndex, selectedProject, showAboutModal]);    
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (selectedProject || showAboutModal) {
+      const isModalOpen = selectedProject || showAboutModal;
+      if (isModalOpen) {
         if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
           e.preventDefault();
           setFocusedIndex((prev) => (prev === 0 ? 1 : 0));
         }
         if (e.key === 'Enter') {
           e.preventDefault();
-          if (focusedIndex === 0) viewButtonRef.current?.click();
-          else closeButtonRef.current?.click();
+          if (selectedProject) {
+            if (focusedIndex === 0) viewButtonRef.current?.click();
+            else closeButtonRef.current?.click();
+          } else if (showAboutModal) {
+            if (focusedIndex === 0) aboutContactButtonRef.current?.click();
+            else aboutCloseButtonRef.current?.click();
+          }
         }
         return;
-      }      
-
+      }
+  
       if (['ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
         keys.current[e.code] = true;
       }
     };
-
+  
     const handleKeyUp = (e) => {
       if (['ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
         keys.current[e.code] = false;
       }
     };
-
+  
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
-
+  
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [selectedProject, focusedIndex]);
+  }, [selectedProject, showAboutModal, focusedIndex]);  
 
   const openModalFromBlock = (index) => {
     const block = blockRefs.current[index];
@@ -332,14 +342,14 @@ export default function MarioPortfolio() {
             <div className="project-buttons">
               <button
                 tabIndex={0}
-                ref={viewButtonRef}
+                ref={aboutContactButtonRef}
                 onClick={handleContactClick}>
                 Contact Me
               </button>
               <button
                 onClick={() => setShowAboutModal(false)}
                 tabIndex={0}
-                ref={closeButtonRef}>
+                ref={aboutCloseButtonRef}>
                 Close
               </button>
             </div>
