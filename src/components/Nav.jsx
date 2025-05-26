@@ -9,7 +9,7 @@ export default function Nav() {
             </div>
             <div className="nav-right">
                 <button>Controls</button>
-                <button>Contact</button>
+                <button onClick={() => window.location.href = 'mailto:christopher.ferraro34@gmail.com'}>Contact</button>
             </div>
         </nav>
     );
