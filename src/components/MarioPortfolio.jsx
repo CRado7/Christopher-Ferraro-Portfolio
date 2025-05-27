@@ -25,12 +25,12 @@ export default function MarioPortfolio({ controlsEnabled }) {
   const closeButtonRef = useRef(null);
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [showAboutModal, setShowAboutModal] = useState(false);
+  const [scrollOffset, setScrollOffset] = useState(0);
 
   const lastDirectionRef = useRef('right');
   const aboutCloseButtonRef = useRef(null);
   const aboutLinkedInButtonRef = useRef(null);
   const aboutGitHubButtonRef = useRef(null);
-
 
   const handleLinkedInClick = () => {
     window.open('https://www.linkedin.com/in/christopher-ferraro-7a3883170', '_blank');
@@ -158,16 +158,36 @@ export default function MarioPortfolio({ controlsEnabled }) {
 
       newVel.y += GRAVITY;
       newPos.x += newVel.x;
+      // Viewport centering (especially for screens >= 768px)
+      if (window.innerWidth <= 768) {
+        const screenCenter = window.innerWidth / 2;
+        const newScrollOffset = newPos.x - screenCenter + 32; // Mario center
+      
+        // Limit scrolling to stay within the 200vw background
+        const maxScroll = (window.innerWidth * 2) - window.innerWidth;
+        const clampedOffset = Math.min(Math.max(newScrollOffset, 0), maxScroll);
+        setScrollOffset(clampedOffset);
+      
+        // Clamp Mario's position between 0 and 200vw - Mario width
+        const marioWidth = 64;
+        const minX = 0;
+        const maxX = (window.innerWidth * 2) - marioWidth;
+        newPos.x = Math.max(minX, Math.min(newPos.x, maxX));
+      }
+
       newPos.y += newVel.y;
 
-      const gameWidth = gameRef.current?.offsetWidth || 0;
-      const marioWidth = 64;
-      if (newPos.x < -marioWidth / 2) {
-        newPos.x = gameWidth - marioWidth / 2;
+      if (window.innerWidth > 768) {
+        const gameWidth = gameRef.current?.offsetWidth || 0;
+        const marioWidth = 64;
+        if (newPos.x < -marioWidth / 2) {
+          newPos.x = gameWidth - marioWidth / 2;
+        }
+        if (newPos.x > gameWidth - marioWidth / 2) {
+          newPos.x = -marioWidth / 2;
+        }
       }
-      if (newPos.x > gameWidth - marioWidth / 2) {
-        newPos.x = -marioWidth / 2;
-      }
+      
 
       if (newPos.y >= 700) {
         newPos.y = 700;
@@ -255,7 +275,13 @@ export default function MarioPortfolio({ controlsEnabled }) {
   }, [velocity, position, onGround]);
 
   return (
-    <div className="game-container" ref={gameRef}>
+    <div className="game-container" 
+      ref={gameRef}
+      style={{
+        transform: `translateX(${-scrollOffset}px)`,
+        transition: 'transform 0.1s linear',
+      }}
+      >
       <MarioSprite
         x={position.x}
         y={position.y}
