@@ -1,14 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 .game-container {
-    position: relative;
-    width: 100dvw;
-    height: 100dvh;
-    /* background: linear-gradient(to top, #88c070 50%, #9be0f3 50%); */
-    background: url('../assets/mario-background.webp');
-    background-size: cover;
-    overflow: hidden;
-  }
+  position: relative;
+  will-change: transform;
+  width: 100dvw;
+  min-height: 100dvh;
+  background: url('../assets/mario-background.webp') no-repeat top center;
+  background-size: cover;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
   
   .mario {
     position: absolute;
@@ -19,20 +21,34 @@
     position: absolute;
     image-rendering: pixelated; /* Keeps that crisp 8-bit look */
     z-index: 1;
-
   }  
 
-  .project-row, .information-row {
+  .project-row {
     position: absolute;
     display: flex;
-  }
-
-  .project-row {
     top: 65%;
-    left: 20%;
-    /* transform: translate(-50%, -50%); */
+    left: 350px;
   }
 
+  .about-row {
+    top: 35%;
+    left: 1025px;
+  }
+
+  .about-row, .socials-row {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .brick-block-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
 .project-block,
 .brick-block,
@@ -116,28 +132,6 @@
     flex-direction: column;
     align-items: center;
     margin: 10px;
-  }
-
-  .about-row, .socials-row {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    gap: 100px;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .about-row {
-    top: 35%;
-    left: 60%;
-  }
-
-  .brick-block-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
   }
 
 
@@ -273,6 +267,15 @@
     }
     
 @media (max-width: 768px) {
+  .game-container {
+    background: url('../assets/mario-background.webp') no-repeat top left;
+    background-size: 100% 100%;
+    width: 200vw; /* Map width */
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
   .gba-controls {
     display: block;
   }
@@ -284,8 +287,18 @@
   }
 
   .disclaimer {
+    display: fixed;
     font-size: 10px;
     bottom: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .game-container {
+    background: url('../assets/mario-background.webp') no-repeat top left;
+    background-size: 100% 100%;
+    width: 250dvw; /* Full width for mobile */
+    height: 100dvh; /* Full height for mobile */
   }
 }
     

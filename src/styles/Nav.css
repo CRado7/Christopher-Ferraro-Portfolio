@@ -44,3 +44,21 @@ nav p {
     text-align: center;
     color: #f83030;
 }
+
+@media (max-width: 768px) {
+    nav h1 {
+        font-size: 1rem;
+    }
+    nav p {
+        font-size: 0.7rem;
+    }
+    .nav-right {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .project-buttons button, nav button {
+        font-size: 8px;
+        padding: 8px 16px;
+        width: 150px;
+      }
+}
