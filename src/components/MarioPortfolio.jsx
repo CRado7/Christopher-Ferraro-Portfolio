@@ -27,11 +27,18 @@ export default function MarioPortfolio({ controlsEnabled }) {
   const [showAboutModal, setShowAboutModal] = useState(false);
 
   const lastDirectionRef = useRef('right');
-  const aboutContactButtonRef = useRef(null);
   const aboutCloseButtonRef = useRef(null);
+  const aboutLinkedInButtonRef = useRef(null);
+  const aboutGitHubButtonRef = useRef(null);
 
-  const handleContactClick = () => {
-    window.location.href = 'mailto:christopher.ferraro34@gmail.com';
+
+  const handleLinkedInClick = () => {
+    window.open('https://www.linkedin.com/in/christopher-ferraro-7a3883170', '_blank');
+    setShowAboutModal(false);
+  };
+
+  const handleGitHubClick = () => {
+    window.open('https://github.com/CRado7', '_blank');
     setShowAboutModal(false);
   };
   
@@ -50,34 +57,49 @@ export default function MarioPortfolio({ controlsEnabled }) {
   }, [selectedProject, showAboutModal]);
   
   useEffect(() => {
-    if (focusedIndex === 0) {
-      selectedProject
-        ? viewButtonRef.current?.focus()
-        : aboutContactButtonRef.current?.focus();
-    } else if (focusedIndex === 1) {
-      selectedProject
-        ? closeButtonRef.current?.focus()
-        : aboutCloseButtonRef.current?.focus();
+    if (selectedProject) {
+      if (focusedIndex === 0) {
+        viewButtonRef.current?.focus();
+      } else if (focusedIndex === 1) {
+        closeButtonRef.current?.focus();
+      }
+    } else if (showAboutModal) {
+      if (focusedIndex === 0) {
+        aboutLinkedInButtonRef.current?.focus();
+      } else if (focusedIndex === 1) {
+        aboutGitHubButtonRef.current?.focus();
+      } else if (focusedIndex === 2) {
+        aboutCloseButtonRef.current?.focus();
+      }
     }
-  }, [focusedIndex, selectedProject, showAboutModal]);    
+  }, [focusedIndex, selectedProject, showAboutModal]);      
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!controlsEnabled) return;
       const isModalOpen = selectedProject || showAboutModal;
       if (isModalOpen) {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        const maxIndex = selectedProject ? 1 : 2; // 2 means LinkedIn, GitHub, Close
+  
+        if (e.key === 'ArrowRight') {
           e.preventDefault();
-          setFocusedIndex((prev) => (prev === 0 ? 1 : 0));
+          setFocusedIndex((prev) => (prev + 1) > maxIndex ? 0 : prev + 1);
         }
+    
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          setFocusedIndex((prev) => (prev - 1 + (maxIndex + 1)) % (maxIndex + 1));
+        }
+        
         if (e.key === 'Enter') {
           e.preventDefault();
           if (selectedProject) {
             if (focusedIndex === 0) viewButtonRef.current?.click();
             else closeButtonRef.current?.click();
           } else if (showAboutModal) {
-            if (focusedIndex === 0) aboutContactButtonRef.current?.click();
-            else aboutCloseButtonRef.current?.click();
+            if (focusedIndex === 0) aboutLinkedInButtonRef.current?.click();
+            else if (focusedIndex === 1) aboutGitHubButtonRef.current?.click();
+            else if (focusedIndex === 2) aboutCloseButtonRef.current?.click();
           }
         }
         return;
@@ -273,6 +295,11 @@ export default function MarioPortfolio({ controlsEnabled }) {
           setBumpedBrickIndex={setBumpedBrickIndex}
           showModal={() => setShowAboutModal(true)}
           blockRefs={blockRefs}
+          aboutCloseButtonRef={aboutCloseButtonRef}
+          aboutLinkedInButtonRef={aboutLinkedInButtonRef}
+          aboutGitHubButtonRef={aboutGitHubButtonRef}
+          handleLinkedInClick={handleLinkedInClick}
+          handleGitHubClick={handleGitHubClick}
         />
         <div className="brick-block-row">
           {[0, 1, 2].map((i) => (
@@ -343,9 +370,15 @@ export default function MarioPortfolio({ controlsEnabled }) {
             <div className="project-buttons">
               <button
                 tabIndex={0}
-                ref={aboutContactButtonRef}
-                onClick={handleContactClick}>
-                Contact Me
+                ref={aboutLinkedInButtonRef}
+                onClick={handleLinkedInClick}>
+                LinkedIn
+              </button>
+              <button
+                tabIndex={1}
+                ref={aboutGitHubButtonRef}
+                onClick={handleGitHubClick}>
+                GitHub
               </button>
               <button
                 onClick={() => setShowAboutModal(false)}

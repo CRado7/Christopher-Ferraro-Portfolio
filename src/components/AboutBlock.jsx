@@ -6,6 +6,11 @@ const AboutBlock = ({
   setBumpedBrickIndex,
   showModal,
   blockRefs,
+  aboutCloseButtonRef,
+  aboutLinkedInButtonRef,
+  aboutGitHubButtonRef,
+  handleLinkedInClick,
+  handleGitHubClick,
 }) => {
   const ref = useRef();
 
