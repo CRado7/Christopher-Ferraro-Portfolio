@@ -10,7 +10,7 @@ const MOVE_SPEED = 5;
 const JUMP_FRAME = 4;
 const STAND_FRAME = 0;
 
-export default function MarioPortfolio() {
+export default function MarioPortfolio({ controlsEnabled }) {
   const [position, setPosition] = useState({ x: 100, y: 0 });
   const [velocity, setVelocity] = useState({ x: 0, y: 0 });
   const [onGround, setOnGround] = useState(false);
@@ -63,6 +63,7 @@ export default function MarioPortfolio() {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (!controlsEnabled) return;
       const isModalOpen = selectedProject || showAboutModal;
       if (isModalOpen) {
         if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
@@ -100,7 +101,7 @@ export default function MarioPortfolio() {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [selectedProject, showAboutModal, focusedIndex]);  
+  }, [selectedProject, showAboutModal, focusedIndex, controlsEnabled]);  
 
   const openModalFromBlock = (index) => {
     const block = blockRefs.current[index];
