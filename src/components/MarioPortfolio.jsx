@@ -366,7 +366,15 @@ export default function MarioPortfolio({ controlsEnabled }) {
         <div className="modal-overlay" onClick={() => setShowAboutModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h1>About Me</h1>
-            <p>I’m a web developer, designer, and game-style portfolio builder who’s way too into Mario blocks.</p>
+            <p>
+              Hi, I’m Christopher Ferraro — a Full Stack Web Developer with a passion for building clean, scalable, and user-focused applications. I bring a strong foundation in both front-end and back-end development, with hands-on experience creating everything from custom CMS integrations to responsive marketing sites and full-stack web apps.
+              <br /><br />
+              My tech stack includes JavaScript, React, Node.js, Express, and MongoDB, and I’m comfortable working across a wide range of frameworks and platforms including WordPress, Squarespace, and GoHighLevel. I’m also experienced with RESTful APIs, Git version control, and UI libraries like Bootstrap and Chakra UI.
+              <br /><br />
+              I earned a certificate in Full Stack Web Development from the University of Central Florida and have since been applying my skills in real-world projects — whether that’s building and maintaining custom websites for clients, optimizing web forms, or helping organizations migrate to more centralized and maintainable platforms.
+              <br /><br />
+              I thrive on solving technical challenges, collaborating with teams, and continuously learning new tools and techniques to stay ahead in the ever-evolving web development landscape. If you're looking for someone who can take a project from concept to deployment — I'm your dev.
+              </p>
             <div className="project-buttons">
               <button
                 tabIndex={0}
