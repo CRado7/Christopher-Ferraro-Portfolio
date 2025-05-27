@@ -33,15 +33,9 @@
     /* transform: translate(-50%, -50%); */
   }
 
-  .information-row {
-    top: 20%;
-    left: 45%;
-  }
-
 
 .project-block,
 .brick-block,
-.information-block,
 .about-block {
     background-size: cover;
     background-repeat: no-repeat;
@@ -60,7 +54,7 @@
     animation: bump 0.3s ease-out;
   }
   
-  .project-block, .information-block, .about-block {
+  .project-block, .about-block {
     background-image: url('../assets/project-block.png');
     cursor: pointer;
   }
@@ -124,10 +118,8 @@
     margin: 10px;
   }
 
-  .about-row {
+  .about-row, .socials-row {
     position: absolute;
-    top: 35%;
-    left: 60%;
     display: flex;
     flex-direction: column;
     gap: 100px;
@@ -136,12 +128,18 @@
     flex-wrap: wrap;
   }
 
+  .about-row {
+    top: 35%;
+    left: 60%;
+  }
+
   .brick-block-row {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
   }
+
 
   @keyframes expandModal {
     0% {

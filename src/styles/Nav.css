@@ -10,11 +10,18 @@ nav {
     padding: 20px 0;
 }
 
-nav h1 {
-    font-size: 1rem;
+nav h1, nav p {
     color: #fff;
     font-family: 'Press Start 2P', cursive; /* retro pixel font */
-    margin: 0;
+    margin: 0 0 10px 0;
+}
+
+nav h1 {
+    font-size: 1.25rem;
+}
+nav p {
+    font-size: 0.8rem;
+    color: #f83030;
 }
 
 .nav-right, .nav-left {
